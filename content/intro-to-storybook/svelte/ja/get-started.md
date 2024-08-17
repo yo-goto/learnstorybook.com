@@ -8,7 +8,7 @@ Storybook は開発時にアプリケーションと並行して動きます。S
 
 ![Storybook と開発中のアプリの関係](/intro-to-storybook/storybook-relationship.jpg)
 
-## Set up Svelte Storybook
+## Svelte 向けの Storybook を構築する
 
 Storybook を開発プロセスに組み込むにあたり、いくつかの手順を踏む必要があります。まずは、[degit](https://github.com/Rich-Harris/degit) を使用してビルド環境をセットアップしましょう。このパッケージを利用することで、テンプレート（アプリケーションの一部をデフォルト設定で構築したもの）をダウンロードし、開発ワークフローの短縮に役立てることができます。
 
