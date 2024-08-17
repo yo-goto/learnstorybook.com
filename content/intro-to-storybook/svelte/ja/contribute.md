@@ -7,6 +7,6 @@ Learn Storybook に協力してください！文法や句読点など小さな�
 
 Learn Storybook はコミュニティによって作成・運営されていますので、最新の状態を保ち、荒い部分を削るには皆さんの協力が必要です。どんな協力でも歓迎します。
 
-## Translations
+## 翻訳
 
 Storybook をすべての人が使用できるように、このチュートリアルを他の言語に翻訳するのを手伝ってください。中国語やスペイン語は特に歓迎します。興味があれば[この issue](https://github.com/chromaui/learnstorybook.com/issues/3) にコメントしてください。
