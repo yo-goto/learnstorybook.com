@@ -1,27 +1,27 @@
 ---
-title: 'Build a simple component'
-tocTitle: 'Simple component'
-description: 'Build a simple component in isolation'
+title: '単純なコンポーネントを作る'
+tocTitle: '単純なコンポーネント'
+description: '単純なコンポーネントを切り離して作りましょう'
 ---
 
-We’ll build our UI following a [Component-Driven Development](https://www.componentdriven.org/) (CDD) methodology. It’s a process that builds UIs from the “bottom-up”, starting with components and ending with screens. CDD helps you scale the amount of complexity you’re faced with as you build out the UI.
+それでは、[コンポーネント駆動開発](https://www.componentdriven.org/) (CDD) の手法にのっとって UI を作ってみましょう。コンポーネント駆動開発とは、UI を最初にコンポーネントから作り始めて、最後に画面を作り上げる「ボトムアップ」の開発プロセスです。CDD を用いれば UI を作る際に直面する複雑性を軽減することができます。
 
-## Task
+## Task (タスク)
 
-![Task component in three states](/intro-to-storybook/task-states-learnstorybook.png)
+![Task コンポーネントの 3 つの状態](/intro-to-storybook/task-states-learnstorybook.png)
 
-`Task` is the core component of our app. Each task displays slightly differently depending on exactly what state it’s in. We display a checked (or unchecked) checkbox, some information about the task, and a “pin” button, allowing us to move tasks up and down the list. Putting this together, we’ll need these props:
+`Task` は今回作るアプリケーションのコアとなるコンポーネントです。タスクはその状態によって見た目が微妙に異なります。タスクにはチェックされた (または未チェックの) チェックボックスと、タスクについての説明と、リストの上部に固定したり解除したりするためのピン留めボタンがあります。これをまとめると、以下のプロパティが必要となります:
 
-- `title` – a string describing the task
-- `state` - which list is the task currently in, and is it checked off?
+- `title` – タスクを説明する文字列
+- `state` - タスクがどのリストに存在するか。またチェックされているかどうか。
 
-As we start to build `Task`, we first write our test states that correspond to the different types of tasks sketched above. Then we use Storybook to build the component in isolation using mocked data. We’ll “visual test” the component’s appearance given each state as we go.
+`Task` の作成を始めるにあたり、事前に上記のそれぞれのタスクに応じたテスト用の状態を作成します。次いで、Storybook で、モックデータを使用し、コンポーネントを切り離して作ります。コンポーネントのそれぞれの状態について"ビジュアルテスト"を行いながら進めます。
 
-## Get set up
+## セットアップする
 
-First, let’s create the task component and its accompanying story file: `src/components/Task.svelte` and `src/components/Task.stories.js`.
+まずは、タスクのコンポーネントと、対応するストーリーファイル `src/components/Task.svelte` と `src/components/Task.stories.js` を作成しましょう。
 
-We’ll begin with a baseline implementation of the `Task`, simply taking in the attributes we know we’ll need and the two actions you can take on a task (to move it between lists):
+`Task` の基本的な実装から始めます。`Task` は上述したプロパティと、タスクに対して実行できる 2 つの (リスト間を移動させる) アクションを引数として取ります:
 
 ```html:title=src/components/Task.svelte
 <script>
@@ -58,9 +58,9 @@ We’ll begin with a baseline implementation of the `Task`, simply taking in the
 </div>
 ```
 
-Above, we render straightforward markup for `Task` based on the existing HTML structure of the Todos app.
+上のコードは Todo アプリケーションの HTML を基にした `Task` の簡単なマークアップです。
 
-Below we build out Task’s three test states in the story file:
+下のコードは `Task` に対する 3 つのテスト用の状態をストーリーファイルに書いています:
 
 ```js:title=src/components/Task.stories.js
 import Task from './Task.svelte';
@@ -118,26 +118,29 @@ export const Archived = {
 
 <div class="aside">
 
-💡 [**Actions**](https://storybook.js.org/docs/essentials/actions) help you verify interactions when building UI components in isolation. Oftentimes you won't have access to the functions and state you have in context of the app. Use `action()` to stub them in.
+💡 [**Actions**](https://storybook.js.org/docs/essentials/actions)は切り離された環境で UI コンポーネントを開発する際の動作確認に役立ちます。アプリケーションの実行中には状態や関数を参照出来ないことがよくあります。`action()` はそのスタブとして使用できます。
 
 </div>
 
-There are two basic levels of organization in Storybook: the component and its child stories. Think of each story as a permutation of a component. You can have as many stories per component as you need.
+Storybook には基本となる 2 つの階層があります。コンポーネントとその子供となるストーリーです。各ストーリーはコンポーネントに連なるものだと考えてください。コンポーネントには必要なだけストーリーを記述することができます。
 
-- **Component**
-  - Story
-  - Story
-  - Story
+- **コンポーネント**
+  - ストーリー
+  - ストーリー
+  - ストーリー
 
-To tell Storybook about the component we are documenting, we create a `default` export that contains:
+Storybook にコンポーネントを認識させるには、以下の内容を含む `default export` を記述します:
 
-- `component` -- the component itself
-- `title` -- how to refer to the component in the sidebar of the Storybook app
-- `excludeStories` -- information required by the story but should not be rendered by the Storybook app
-- `tags` -- to automatically generate documentation for our components
-- `render` -- a function that gives additional control over how the story is rendered
+- `component` -- コンポーネント自体
+- `title` -- Storybook のサイドバーにあるコンポーネントを参照する方法
+- `excludeStories` -- ストーリーから要求されるがStorybookではレンダリングされない情報
+- `tags` -- コンポーネント用のドキュメントを自動生成する
+- `render` -- ストーリーのレンダリングを追加で制御するための関数
 
 To define our stories, we'll use Component Story Format 3 (also known as [CSF3](https://storybook.js.org/docs/api/csf) ) to build out each of our test cases. This format is designed to build out each of our test cases in a concise way. By exporting an object containing each component state, we can define our tests more intuitively and author and reuse stories more efficiently.
+
+ストーリーを定義するには、テスト用の状態ごとにストーリーを生成する([CSF3](https://storybook.js.org/docs/api/csf)とも知られる)コンポーネントストーリーフォーマット3で使用します。このフォーマットは
+
 
 Arguments or [`args`](https://storybook.js.org/docs/writing-stories/args) for short, allow us to live-edit our components with the controls addon without restarting Storybook. Once an [`args`](https://storybook.js.org/docs/writing-stories/args) value changes, so does the component.
 
@@ -147,11 +150,11 @@ As we need to pass the same set of actions to all permutations of our component,
 
 When creating a story, we use a base `task` arg to build out the shape of the task the component expects. Typically modeled from what the actual data looks like. Again, `export`-ing this shape will enable us to reuse it in later stories, as we'll see.
 
-## Config
+## 設定する
 
-We'll need to make a couple of changes to Storybook's configuration files so it notices our recently created stories and allows us to use the application's CSS file (located in `src/index.css`).
+作成したストーリーを認識させ、アプリケーションの(`src/index.css` に位置する) CSS ファイルを使用できるようにするため、Storybook の設定をいくつか変更する必要があります。
 
-Start by changing your Storybook configuration file (`.storybook/main.js`) to the following:
+まず、設定ファイル (`.storybook/main.js`) を以下のように変更してください:
 
 ```diff:title=.storybook/main.js
 /** @type { import('@storybook/svelte-vite').StorybookConfig } */
@@ -175,7 +178,7 @@ const config = {
 export default config;
 ```
 
-After completing the change above, inside the `.storybook` folder, change your `preview.js` to the following:
+上記の変更が完了したら、`.storybook` フォルダー内の `preview.js` を、以下のように変更してください:
 
 ```diff:title=.storybook/preview.js
 + import '../src/index.css';
@@ -197,11 +200,11 @@ const preview = {
 export default preview;
 ```
 
-[`parameters`](https://storybook.js.org/docs/writing-stories/parameters) are typically used to control the behavior of Storybook's features and addons. In our case, we're going to use them to configure how the `actions` (mocked callbacks) are handled.
+[`parameters`](https://storybook.js.org/docs/react/writing-stories/parameters) は Storybook の機能やアドオンの振る舞いをコントロールするのに使用します。この例では、`actions` (呼び出しのモック) がどのように扱われるかを設定しています。
 
-`actions` allows us to create callbacks that appear in the **Actions** panel of the Storybook UI when clicked. So when we build a pin button, we’ll be able to determine if a button click is successful in the UI.
+`acitons` を使用することで、クリックした時などに Storybook の **Actions** パネルにその情報を表示するコールバックを作成できます。これにより、ピン留めボタンを作成するとき、ボタンがクリックされたことがテスト用の UI 上で確認できます。
 
-Once we’ve done this, restarting the Storybook server should yield test cases for the three Task states:
+Storybook のサーバーを再起動すると、タスクの 3 つの状態のテストケースが生成されているはずです:
 
 <video autoPlay muted playsInline loop>
   <source
@@ -210,11 +213,11 @@ Once we’ve done this, restarting the Storybook server should yield test cases 
   />
 </video>
 
-## Build out the states
+## 状態を作り出す
 
-Now that we have Storybook set up, styles imported, and test cases built out, we can quickly start implementing the HTML of the component to match the design.
+ここまでで、Storybook のセットアップが完了し、スタイルをインポートし、テストケースを作りました。早速、デザインに合わせてコンポーネントの HTML を実装していきましょう。
 
-The component is still rudimentary at the moment. First, write the code that achieves the design without going into too much detail:
+今のところコンポーネントは簡素な状態です。まずはデザインを実現するために最低限必要なコードを書いてみましょう:
 
 ```html:title=src/components/Task.svelte
 <script>
@@ -287,7 +290,7 @@ The component is still rudimentary at the moment. First, write the code that ach
 </div>
 ```
 
-The additional markup from above combined with the CSS we imported earlier yields the following UI:
+先ほど追加したマークアップとインポートした CSS により以下のような UI ができます:
 
 <video autoPlay muted playsInline loop>
   <source
@@ -296,25 +299,25 @@ The additional markup from above combined with the CSS we imported earlier yield
   />
 </video>
 
-## Component built!
+## コンポーネントのビルド
 
-We’ve now successfully built out a component without needing a server or running the entire frontend application. The next step is to build out the remaining Taskbox components one by one in a similar fashion.
+これでサーバーを起動したり、フロントエンドアプリケーションを起動したりすることなく、コンポーネントを作りあげることができました。次の章では、Taskbox の残りのコンポーネントを、同じように少しずつ作成していきます。
 
-As you can see, getting started building components in isolation is easy and fast. We can expect to produce a higher-quality UI with fewer bugs and more polish because it’s possible to dig in and test every possible state.
+見た通り、コンポーネントだけを切り離して作り始めるのは早くて簡単です。あらゆる状態を掘り下げてテストできるので、高品質で、バグが少なく、洗練された UI を作ることができることでしょう。
 
-## Catch accessibility issues
+## アクセシビリティの問題の検知
 
-Accessibility tests refer to the practice of auditing the rendered DOM with automated tools against a set of heuristics based on [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) rules and other industry-accepted best practices. They act as the first line of QA to catch blatant accessibility violations ensuring that an application is usable for as many people as possible, including people with disabilities such as vision impairment, hearing problems, and cognitive conditions.
+アクセシビリティテストとは、[WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) のルールと他の業界で認めれたベストプラクティスに基づく経験則に対して、自動化ツールを用いることでレンダリングされた DOM を監視することを指します。これは視覚障害、聴覚障害、認知障害などの障害をお持ちの方を含む、できるだけ多くのユーザーがアプリケーションを利用できるように、明らかなアクセシビリティの違反を検知するために QA の第一線として機能します。
 
-Storybook includes an official [accessibility addon](https://storybook.js.org/addons/@storybook/addon-a11y). Powered by Deque's [axe-core](https://github.com/dequelabs/axe-core), it can catch up to [57% of WCAG issues](https://www.deque.com/blog/automated-testing-study-identifies-57-percent-of-digital-accessibility-issues/).
+Storybook には公式の[アクセシビリティアドオン](https://storybook.js.org/addons/@storybook/addon-a11y)があります。これは、Deque の [axe-core](https://github.com/dequelabs/axe-core) を使っており、[WCAG の問題の 57%](https://www.deque.com/blog/automated-testing-study-identifies-57-percent-of-digital-accessibility-issues/) に対応しています。
 
-Let's see how it works! Run the following command to install the addon:
+それでは、どのように動かすのかみてみましょう! 以下のコマンドでアドオンをインストールします:
 
 ```shell
 yarn add --dev @storybook/addon-a11y
 ```
 
-Then, update your Storybook configuration file (`.storybook/main.js`) to enable it:
+アドオンを利用可能にするために、Storybook の設定ファイル(`.storybook/main.js`)を以下のように設定します:
 
 ```diff:title=.storybook/main.js
 /** @type { import('@storybook/svelte-vite').StorybookConfig } */
@@ -335,11 +338,11 @@ const config = {
 export default config;
 ```
 
-Finally, restart your Storybook to see the new addon enabled in the UI.
+最後に、Storybookを再起動して、UI内で有効化した新しいアドオンを確認してみましょう。
 
 ![Task accessibility issue in Storybook](/intro-to-storybook/finished-task-states-accessibility-issue-7-0.png)
 
-Cycling through our stories, we can see that the addon found an accessibility issue with one of our test states. The message [**"Elements must have sufficient color contrast"**](https://dequeuniversity.com/rules/axe/4.4/color-contrast?application=axeAPI) essentially means there isn't enough contrast between the task title and the background. We can quickly fix it by changing the text color to a darker gray in our application's CSS (located in `src/index.css`).
+ストーリーを一通り見てみると、このアドオンが一つのアクセシビリティの問題を検知したことがわかります。[**「Elements must have sufficient color contrast」**](https://dequeuniversity.com/rules/axe/4.4/color-contrast?application=axeAPI)というエラーメッセージは本質的にタイトルと背景に十分なコントラストがないことを指しています。そのため、アプリケーションの CSS (`src/index.css` にある)の中で、テキストカラーをより暗いグレーに修正する必要があります。
 
 ```diff:title=src/index.css
 .list-item.TASK_ARCHIVED input[type="text"] {
@@ -349,8 +352,8 @@ Cycling through our stories, we can see that the addon found an accessibility is
 }
 ```
 
-That's it! We've taken the first step to ensure that UI becomes accessible. As we continue to add complexity to our application, we can repeat this process for all other components without needing to spin up additional tools or testing environments.
+以上です！これで、UI のアクセシビリティ向上の最初のステップが完了です。アプリケーションをさらに複雑にしても、他の全てのコンポーネントに対してこのプロセスを繰り返すことができ、追加のツールやテスト環境を準備する必要はありません。
 
 <div class="aside">
-💡 Don't forget to commit your changes with git!
+💡 Git へのコミットを忘れずに行ってください！
 </div>
